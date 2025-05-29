@@ -10,7 +10,7 @@ import time # Para medir o tempo
 PDF_SOURCES_DIR = "pdf_sources"
 PDF_METADATA_FILE = "pdf_metadata.json"
 # Modelo de embedding que planejamos usar no backend também
-EMBEDDING_MODEL_NAME = "sentence-transformers/paraphrase-multilingual-mpnet-base-v2"
+EMBEDDING_MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
 CHUNK_SIZE = 1000
 CHUNK_OVERLAP = 200
 # Nome da pasta onde o índice FAISS será salvo
