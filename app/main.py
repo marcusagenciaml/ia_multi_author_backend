@@ -56,7 +56,7 @@ app.add_middleware(
 )
 # --- FIM DA CONFIGURAÇÃO DO CORS ---
 
-app.include_router(api_router, prefix="/api/v1")
+app.include_router(api_router, prefix="/api/v1/")
 
 @app.get("/", tags=["Root"], summary="Endpoint raiz da API")
 async def root():

@@ -6,7 +6,7 @@ import logging
 logger = logging.getLogger(__name__)
 router = APIRouter()
 
-@router.post("/ask", response_model=ChatResponse, summary="Faz uma pergunta à IA")
+@router.post("/ask/", response_model=ChatResponse, summary="Faz uma pergunta à IA")
 async def ask_question(request_body: ChatRequest = Body(..., example={"query": "Qual o segredo para uma vida plena?"})):
     """
     Recebe uma pergunta do usuário e retorna a resposta da IA baseada no RAG,
