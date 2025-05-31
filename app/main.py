@@ -1,10 +1,10 @@
 # app/main.py
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware # <<---- 1. IMPORTE O MIDDLEWARE
 from contextlib import asynccontextmanager
 from app.api.v1.endpoints.router import api_router
-from app.services.rag_service import initialize_rag_components # Apenas importe a função
-# NÃO importe qa_chain_global aqui: from app.services.rag_service import qa_chain_global
+from app.services.rag_service import initialize_rag_components
 from app.core.config import settings
 import logging
 
@@ -20,15 +20,10 @@ async def lifespan(app: FastAPI):
     logger.info(f"Caminho do Índice FAISS: {settings.FAISS_INDEX_PATH}")
     
     try:
-        initialize_rag_components() # Chamar a inicialização
-        # A função initialize_rag_components já loga sucesso ou falha.
-        # Se houver uma falha crítica lá, ela pode até levantar uma exceção
-        # para impedir o startup, se desejado.
+        initialize_rag_components()
         logger.info("Inicialização dos componentes RAG solicitada. Verifique os logs do rag_service para o status detalhado.")
     except Exception as e:
         logger.critical(f"Falha catastrófica durante a inicialização dos componentes RAG: {e}", exc_info=True)
-        # Aqui você poderia decidir parar a aplicação se a inicialização falhar completamente
-        # raise RuntimeError("Falha crítica na inicialização do RAG.") from e
     
     yield
     logger.info("Aplicação encerrando...")
@@ -40,15 +35,33 @@ app = FastAPI(
     lifespan=lifespan
 )
 
+# --- CONFIGURAÇÃO DO CORS ---
+# <<---- 2. DEFINA AS ORIGENS PERMITIDAS ---->>
+origins = [
+    "http://localhost:3000",  # Seu frontend Next.js rodando localmente para desenvolvimento
+    # Adicione aqui a URL do seu frontend quando fizer deploy na Vercel
+    # Ex: "https://seu-projeto-frontend.vercel.app"
+    # Adicione também "https://ai.agenciaml.com" se você planeja ter um frontend servido no mesmo domínio
+    # ou se outras aplicações nesse domínio precisarem acessar a API.
+    # Por segurança, seja o mais específico possível com as origens.
+]
+
+# <<---- 3. ADICIONE O MIDDLEWARE CORS À APLICAÇÃO ---->>
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,  # Lista de origens que têm permissão para fazer requisições
+    allow_credentials=True, # Permite cookies em requisições cross-origin (se você usar)
+    allow_methods=["*"],    # Permite todos os métodos (GET, POST, PUT, DELETE, etc.)
+    allow_headers=["*"],    # Permite todos os cabeçalhos
+)
+# --- FIM DA CONFIGURAÇÃO DO CORS ---
+
 app.include_router(api_router, prefix="/api/v1")
 
 @app.get("/", tags=["Root"], summary="Endpoint raiz da API")
 async def root():
-    # Para verificar o status real, o ideal seria que o rag_service expusesse uma função de status
-    # Por agora, esta é uma mensagem genérica.
-    # Se você testar o endpoint /ask e ele funcionar, a chain está ok.
     return {
         "message": "Bem-vindo à API da IA Multi-Autor!",
-        "rag_status": "Inicialização tentada. Verifique os logs do rag_service ou teste o endpoint /ask.",
+        "rag_status": "Inicialização tentada. Verifique os logs do rag_service ou teste o endpoint /api/v1/chat/ask.", # Ajuste o endpoint de teste
         "docs_url": "/docs"
     }
