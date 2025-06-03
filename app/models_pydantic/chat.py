@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from typing import List, Optional, Dict, Any # Any foi usado para page
+from typing import List, Optional, Dict, Any  # Any é usado para permitir diferentes tipos na página
 
 class ChatRequest(BaseModel):
     query: str
