@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import List, Optional, Dict, Any # Any foi usado para page
 
 class ChatRequest(BaseModel):
@@ -14,5 +14,5 @@ class SourceDocument(BaseModel):
 
 class ChatResponse(BaseModel):
     answer: Optional[str] = None
-    source_documents: List[SourceDocument] = []
+    source_documents: List[SourceDocument] = Field(default_factory=list)
     error: Optional[str] = None
