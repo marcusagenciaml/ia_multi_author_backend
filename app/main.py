@@ -1,7 +1,7 @@
 # app/main.py
 
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware # <<---- 1. IMPORTE O MIDDLEWARE
+from fastapi.middleware.cors import CORSMiddleware  # Middleware CORS
 from contextlib import asynccontextmanager
 from app.api.v1.endpoints.router import api_router
 from app.services.rag_service import initialize_rag_components
@@ -36,7 +36,7 @@ app = FastAPI(
 )
 
 # --- CONFIGURAÇÃO DO CORS ---
-# <<---- 2. DEFINA AS ORIGENS PERMITIDAS ---->>
+# Definição das origens permitidas
 origins = [
     "http://localhost:3000",  # Seu frontend Next.js rodando localmente para desenvolvimento
     # Adicione aqui a URL do seu frontend quando fizer deploy na Vercel
@@ -46,7 +46,7 @@ origins = [
     # Por segurança, seja o mais específico possível com as origens.
 ]
 
-# <<---- 3. ADICIONE O MIDDLEWARE CORS À APLICAÇÃO ---->>
+# Inclusão do middleware CORS na aplicação
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,  # Lista de origens que têm permissão para fazer requisições
