@@ -36,15 +36,8 @@ app = FastAPI(
 )
 
 # --- CONFIGURAÇÃO DO CORS ---
-# Definição das origens permitidas
-origins = [
-    "http://localhost:3000",  # Seu frontend Next.js rodando localmente para desenvolvimento
-    # Adicione aqui a URL do seu frontend quando fizer deploy na Vercel
-    # Ex: "https://seu-projeto-frontend.vercel.app"
-    # Adicione também "https://ai.agenciaml.com" se você planeja ter um frontend servido no mesmo domínio
-    # ou se outras aplicações nesse domínio precisarem acessar a API.
-    # Por segurança, seja o mais específico possível com as origens.
-]
+# Definição das origens permitidas a partir da configuração
+origins = [origin.strip() for origin in settings.ALLOWED_ORIGINS.split(',') if origin.strip()]
 
 # Inclusão do middleware CORS na aplicação
 app.add_middleware(
